@@ -3,15 +3,14 @@ import React from 'react';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { Layout } from '../components/Layout';
 
-import { MintTokenButton } from '../components/MintToken';
-import { TokenLaunchForm } from '../components/TokenForm';
+import { ContractTabs } from '../components/ContractTabs';
 
 const Home: NextPage = () => {
 
   return (
     <Layout header footer>
       <Paper sx={{ p: 2, display: 'flex' }}>
-        <TokenLaunchForm />
+        <ContractTabs />
       </Paper>
     </Layout>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
-import { TextField, Button, Grid, MenuItem, IconButton } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, IconButton, SelectChangeEvent, FormControl, InputLabel, Select } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
 
 interface IUnlockPoint {
@@ -18,9 +18,9 @@ interface IFormInput {
   tokenDescription?: string;
   websiteUrl?: string;
   whitepaperUrl?: string;
-  contactEmail?: string;
   unlockingStrategy: string;
   unlockPoints: IUnlockPoint[];
+  chainId: number;
 }
 
 export const TokenLaunchForm: React.FC = () => {
@@ -141,17 +141,6 @@ export const TokenLaunchForm: React.FC = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            label="Contact Email"
-            type="email"
-            {...register("contactEmail", { pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/ })}
-            error={!!errors.contactEmail}
-            helperText={errors.contactEmail ? "Must be a valid email." : ""}
-            fullWidth
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12}>
           <Controller
             name="unlockingStrategy"
             control={control}
@@ -197,7 +186,7 @@ export const TokenLaunchForm: React.FC = () => {
                 size="small"
               />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={2} display='flex' direction='row' justifyContent='center'>
               <IconButton onClick={() => remove(index)} disabled={fields.length === 1}>
                 <Remove />
               </IconButton>
