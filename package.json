@@ -1,0 +1,24 @@
+{
+  "name": "root",
+  "license": "MIT",
+  "scripts": {
+    "bootstrap": "yarn lerna bootstrap",
+    "start:front": "cd packages/front && yarn dev",
+    "start:hardhat": "cd packages/contracts && yarn start",
+    "contract:compile": "cd packages/contracts && yarn compile",
+    "contract:test": "cd packages/contracts && yarn test",
+    "contract:deploy:local": "cd packages/contracts && yarn deploy:local",
+    "contract:deploy:sepolia": "cd packages/contracts && yarn deploy:sepolia",
+    "changelog": "conventional-changelog -p angular -r 2 -i CHANGELOG.md -s",
+    "commit": "git-cz -S",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^17.1.0",
+    "@openzeppelin/contracts": "^5.0.2",
+    "conventional-changelog-cli": "^2.2.2",
+    "dotenv": "^16.4.5",
+    "husky": "^8.0.0",
+    "lerna": "^4.0.0"
+  }
+}
