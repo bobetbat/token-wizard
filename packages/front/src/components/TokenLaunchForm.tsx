@@ -8,31 +8,42 @@ interface IUnlockPoint {
   amount: number;
 }
 
+interface InitialDistribution {
+  address: string;
+  amount: number;
+}
+
 interface IFormInput {
   tokenName: string;
   tokenSymbol: string;
   totalSupply: number;
   decimals: number;
-  initialDistributionAddress: string;
+  initialDistribution: InitialDistribution[];
   launchDate: string;
   tokenDescription?: string;
   websiteUrl?: string;
   whitepaperUrl?: string;
   unlockingStrategy: string;
-  unlockPoints: IUnlockPoint[];
+  vesting: IUnlockPoint[];
   chainId: number;
 }
 
 export const TokenLaunchForm: React.FC = () => {
   const { control, register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     defaultValues: {
-      unlockPoints: [{ date: '', amount: 0 }]
+      vesting: [{ date: '', amount: 0 }],
+      initialDistribution: [{ address: '', amount: 0 }]
     }
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: vesting, append, remove } = useFieldArray({
     control,
-    name: 'unlockPoints'
+    name: 'vesting'
+  });
+
+  const { fields: initialDistribution, append: appendAddress, remove: removeAddress } = useFieldArray({
+    control,
+    name: 'initialDistribution'
   });
 
   const onSubmit: SubmitHandler<IFormInput> = data => {
@@ -84,15 +95,40 @@ export const TokenLaunchForm: React.FC = () => {
             size="small"
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            label="Initial Distribution Address"
-            {...register("initialDistributionAddress", { required: true, pattern: /^0x[a-fA-F0-9]{40}$/ })}
-            error={!!errors.initialDistributionAddress}
-            helperText={errors.initialDistributionAddress ? "A valid Ethereum address is required." : ""}
-            fullWidth
-            size="small"
-          />
+        {initialDistribution.map((field, index) => (
+          <Grid container item xs={12} spacing={2} key={field.id}>
+            <Grid item xs={5}>
+              <TextField
+                label="Initial Distribution Address"
+                {...register(`initialDistribution.${index}.address`, { required: true, pattern: /^0x[a-fA-F0-9]{40}$/ })}
+                error={!!errors.initialDistribution}
+                helperText={errors.initialDistribution ? "A valid Ethereum address is required." : ""}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={5}>
+              <TextField
+                label="Token Amount"
+                type="number"
+                {...register(`initialDistribution.${index}.amount`, { required: "Token Amount is required.", min: 1 })}
+                error={!!errors.initialDistribution?.[index]?.amount}
+                helperText={errors.initialDistribution?.[index]?.amount ? "Token Amount should be a positive number." : ""}
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={2} display='flex' direction='row' justifyContent='center'>
+              <IconButton onClick={() => removeAddress(index)} disabled={initialDistribution.length === 1}>
+                <Remove />
+              </IconButton>
+            </Grid>
+          </Grid>
+        ))}
+        <Grid item xs={'auto'}>
+          <Button startIcon={<Add />} onClick={() => appendAddress({ address: '', amount: 0 })}>
+            Add address
+          </Button>
         </Grid>
         <Grid item xs={12}>
           <TextField
@@ -161,16 +197,16 @@ export const TokenLaunchForm: React.FC = () => {
             )}
           />
         </Grid>
-        {fields.map((field, index) => (
+        {vesting.map((field, index) => (
           <Grid container item xs={12} spacing={2} key={field.id}>
             <Grid item xs={5}>
               <TextField
                 label="Unlock Date"
                 type="date"
                 InputLabelProps={{ shrink: true }}
-                {...register(`unlockPoints.${index}.date`, { required: "Unlock Date is required." })}
-                error={!!errors.unlockPoints?.[index]?.date}
-                helperText={errors.unlockPoints?.[index]?.date?.message}
+                {...register(`vesting.${index}.date`, { required: "Unlock Date is required." })}
+                error={!!errors.vesting?.[index]?.date}
+                helperText={errors.vesting?.[index]?.date?.message}
                 fullWidth
                 size="small"
               />
@@ -179,15 +215,15 @@ export const TokenLaunchForm: React.FC = () => {
               <TextField
                 label="Unlock Amount"
                 type="number"
-                {...register(`unlockPoints.${index}.amount`, { required: "Unlock Amount is required.", min: 1 })}
-                error={!!errors.unlockPoints?.[index]?.amount}
-                helperText={errors.unlockPoints?.[index]?.amount ? "Unlock Amount should be a positive number." : ""}
+                {...register(`vesting.${index}.amount`, { required: "Unlock Amount is required.", min: 1 })}
+                error={!!errors.vesting?.[index]?.amount}
+                helperText={errors.vesting?.[index]?.amount ? "Unlock Amount should be a positive number." : ""}
                 fullWidth
                 size="small"
               />
             </Grid>
             <Grid item xs={2} display='flex' direction='row' justifyContent='center'>
-              <IconButton onClick={() => remove(index)} disabled={fields.length === 1}>
+              <IconButton onClick={() => remove(index)} disabled={vesting.length === 1}>
                 <Remove />
               </IconButton>
             </Grid>
