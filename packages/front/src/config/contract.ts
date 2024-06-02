@@ -1,4 +1,5 @@
 import type { Hash } from '../types';
+import { sepolia, mantle, optimism, linea, polygonZkEvm, } from 'wagmi/chains'
 
 export interface TGetNumberOfProperties {
   owner: Hash
@@ -14,8 +15,8 @@ export interface TContracts {
 }
 
 export const contracts: TContracts = {
-  5001: {
-    name: 'mantleTestnet',
-    address: '0x',
+  [sepolia.id]: {
+    name: 'sepolia',
+    address: '0x6fc2b18b6b8587eb65d5c9ffaff60fe380eb92d3',
   },
 }

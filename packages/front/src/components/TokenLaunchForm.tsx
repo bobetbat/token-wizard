@@ -1,7 +1,8 @@
 import React from 'react';
 import { useForm, SubmitHandler, useFieldArray, Controller } from 'react-hook-form';
-import { TextField, Button, Grid, MenuItem, IconButton, SelectChangeEvent, FormControl, InputLabel, Select } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, IconButton } from '@mui/material';
 import { Add, Remove } from '@mui/icons-material';
+import { useDeploy } from '../hooks/useDeploy';
 
 interface IUnlockPoint {
   date: string;
@@ -29,6 +30,7 @@ interface IFormInput {
 }
 
 export const TokenLaunchForm: React.FC = () => {
+  const { deploy } = useDeploy()
   const { control, register, handleSubmit, formState: { errors } } = useForm<IFormInput>({
     defaultValues: {
       vesting: [{ date: '', amount: 0 }],
@@ -46,8 +48,10 @@ export const TokenLaunchForm: React.FC = () => {
     name: 'initialDistribution'
   });
 
-  const onSubmit: SubmitHandler<IFormInput> = data => {
+  const onSubmit: SubmitHandler<IFormInput> = (data: any) => {
     console.log(data);
+    console.log('data', data)
+    deploy(data)
   };
 
   return (
